@@ -45,13 +45,92 @@
  *   pricer("gold", true)  // => 200 * 1.5 * 1.3 = 390
  */
 export function createDialogueWriter(genre) {
-  // Your code here
+  const allowedGenre = ["action", "romance", "comedy", "drama"];
+
+  if (!allowedGenre.includes(genre)) {
+    return null;
+  }
+
+  return function (hero, villain) {
+    if (!hero || !villain) {
+      return "...";
+    }
+
+    let returnStr = "";
+    switch (genre) {
+      case "action":
+        returnStr = `${hero} says: 'Tujhe toh main dekh lunga, ${villain}!'`;
+        break;
+      case "romance":
+        returnStr = `${hero} whispers: '${villain}, tum mere liye sab kuch ho'`;
+        break;
+      case "comedy":
+        returnStr = `${hero} laughs: '${villain} bhai, kya kar rahe ho yaar!'`;
+        break;
+      case "drama":
+        returnStr = `${hero} cries: '${villain}, tune mera sab kuch cheen liya!'`;
+        break;
+      default:
+        returnStr = null;
+        break;
+    }
+    return returnStr;
+  };
 }
 
 export function createTicketPricer(basePrice) {
-  // Your code here
+  if (basePrice <= 0) {
+    return null;
+  }
+
+  return function (seatType, isWeekend = false) {
+    if (seatType === undefined) {
+      return null;
+    }
+
+    const allowedSeatType = ["silver", "gold", "platinum"];
+    if (!allowedSeatType.includes(seatType)) {
+      return null;
+    }
+
+    let seatMultiplier = 0;
+    switch (seatType) {
+      case "silver":
+        seatMultiplier = 1;
+        break;
+      case "gold":
+        seatMultiplier = 1.5;
+        break;
+      case "platinum":
+        seatMultiplier = 2;
+        break;
+      default:
+        seatMultiplier = null;
+        break;
+    }
+
+    const totalPrice = basePrice * seatMultiplier;
+
+    if (isWeekend) {
+      return Math.round(totalPrice * 1.3);
+    }
+
+    return Math.round(totalPrice);
+  };
 }
 
 export function createRatingCalculator(weights) {
-  // Your code here
+  if (typeof weights !== "object" || weights === null) return null;
+
+  return function (scores) {
+    if (!scores) return null;
+
+    const totalAverage =
+      (weights.story * scores.story || 0) +
+      (weights.acting * scores.acting || 0) +
+      (weights.direction * scores.direction || 0) +
+      (weights.music * scores.music || 0);
+
+    return Math.round(totalAverage * 10) / 10;
+  };
 }
